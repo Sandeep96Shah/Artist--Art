@@ -1,12 +1,14 @@
 const express = require('express');
+const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const app = express();
-const PORT = 8080;
+const db = require('./config/mongoose');
+const PORT = 8000;
 
 // middlewares
-app.use(cors());
 app.use(express.urlencoded({extended: true}));
+app.use(cors());
+app.use('/', require('./routes/index'));
 
 // starting the server
 app.listen(PORT, (error) => {
