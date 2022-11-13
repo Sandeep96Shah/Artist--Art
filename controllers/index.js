@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const jwt = require('jsonwebtoken');
 
 const bucketName = process.env.BUCKET_NAME;
 const region = process.env.BUCKET_REGION;
@@ -66,11 +67,15 @@ module.exports.createUser = async (req, res) => {
         const imageUrl = await getSignedUrl(s3, getCommand, { expiresIn: 3600 });
 
         // try to add imageUrl data in ProfilePic of user object
+        console.log("newUser", newUser);
+        const token = jwt.sign({id: newUser._id, email: newUser.email}, process.env.JWT_SECRET, { expiresIn: "10000000" });
+        console.log("token", token);
         return res.status(200).json({
             message: 'user is added successfully!!!',
             status: 'success',
             user: newUser,
             profilePic: imageUrl,
+            token,
         })
     } catch(error) {
         return res.status(500).json({
@@ -79,4 +84,10 @@ module.exports.createUser = async (req, res) => {
         })
     }
 };
+
+module.exports.test = async (req, res) => {
+    return res.status(200).json({
+        message:"tested"
+    })
+}
 
