@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const userDetailsSchema = new mongoose.Schema({
    user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
+    ref: 'users',
    },
     interests : [
         {
